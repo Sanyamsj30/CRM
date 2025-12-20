@@ -4,6 +4,7 @@ import errorHandler from './middlewares/error.middleware.js';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import authRoutes from './routes/auth.routes.js';
+import interactionRoutes from './routes/interaction.routes.js';
 
 const app = express();
 
@@ -22,6 +23,9 @@ app.use('/api/customers', customerRoutes);
 
 //auth routes
 app.use('/api/auth', authRoutes);
+
+//interaction routes
+app.use('/api/interactions', interactionRoutes);
 
 
 // Sample route

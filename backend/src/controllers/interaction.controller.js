@@ -1,4 +1,4 @@
-import Interaction from '../models/user.model.js';
+import Interaction from '../models/interaction.model.js';
 import { asynchandler } from '../utils/asynchandler.js';
 import { ApiError } from '../utils/ApiError.js';
 import { ApiResponse } from '../utils/ApiResponse.js';
@@ -51,14 +51,13 @@ export const createInteraction = asynchandler(async (req, res) => {
 
 export const getAllInteractions = asynchandler(async (req, res) => {
     const interactions = await Interaction.find()
-  .populate("customer", "name email")
-  .populate("user", "name");
+  .populate("customer", "name email");
 
     res.status(200).json(new ApiResponse(200, interactions, "Interactions retrieved successfully"));
 
 });
 
-export const getCustomerInteractions = asyncHandler(async (req, res) => {
+export const getCustomerInteractions = asynchandler(async (req, res) => {
   const { customerId } = req.params;
 
   if (!customerId) {
@@ -67,8 +66,7 @@ export const getCustomerInteractions = asyncHandler(async (req, res) => {
 
   const interactions = await Interaction.find({ customer: customerId })
     .sort({ scheduledAt: -1, createdAt: -1 })
-    .populate("customer", "name email")
-    .populate("user", "name");
+    .populate("customer", "name email");
 
   return res.status(200).json(
     new ApiResponse(
@@ -109,7 +107,7 @@ export const rescheduleInteraction = asynchandler(async (req, res) => {
     if (!scheduledAt) {
         throw new ApiError(400, "scheduledAt is required");
     }   
-    
+
     const interaction = await Interaction.findById(id);
 
     if (!interaction) {
