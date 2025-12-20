@@ -1,0 +1,27 @@
+{
+  "name": "crm",
+  "version": "1.0.0",
+  "description": "",
+  "keywords": [
+    "javascript",
+    "backend"
+  ],
+  "homepage": "https://github.com/Sanyamsj30/CRM#readme",
+  "bugs": {
+    "url": "https://github.com/Sanyamsj30/CRM/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Sanyamsj30/CRM.git"
+  },
+  "license": "ISC",
+  "author": "sanyam jain",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon src/index.js",
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.11"
+  }
+}
