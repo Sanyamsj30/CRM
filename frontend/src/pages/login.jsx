@@ -1,5 +1,11 @@
 const Login = () => {
-  return <h2>Login Page</h2>;
+  return (
+    <div className="min-h-screen bg-green-500 flex items-center justify-center">
+      <h1 className="text-white text-4xl font-bold">
+        TAILWIND TEST
+      </h1>
+    </div>
+  );
 };
 
 export default Login;
