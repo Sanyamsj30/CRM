@@ -174,14 +174,19 @@ export const verifyEmail = asynchandler(async(req,res)=>{
     if(!user.emailVerificationOTPExpiry || user.emailVerificationOTPExpiry < Date.now()){
         throw new ApiError(400,"OTP has expired");
     }
-    if(user.emailVerificationOTP !== otp){
-        throw new ApiError(400,"Invalid OTP");
-    }     
+    if (String(user.emailVerificationOTP) !== String(otp)) {
+      throw new ApiError(400, "Invalid OTP");
+    }
+  
 
     user.isEmailVerified = true;
     user.emailVerificationOTP = null;
+    user.emailVerificationOTPExpiry = null;
+
     await user.save();      
-    res.status(200).json(new ApiResponse(200,null,"Email verified successfully"));
+     res.status(200).json(
+    new ApiResponse(200, { isEmailVerified: user.isEmailVerified }, "Email verified successfully")
+  );
 });
 
 // export const resendEmailVerificationOTP = asynchandler(async(req,res)=>{
@@ -250,13 +255,66 @@ export const forgotPassword = asynchandler(async(req,res)=>{
     user.resetPasswordOTPExpiry = Date.now() + 10 * 60 * 1000;
     await user.save();
 
-    await sendEmail({
-      email: user.email,
-      subject: "Reset Password",
-      html: generateResetPasswordEmailContent(otp),
-    })
+    try {
+      await sendEmail({
+        email: user.email,
+        subject: "Reset Password",
+        html: generateResetPasswordEmailContent(otp),
+      });
+    } catch (err) {
+      // Optional but recommended: invalidate OTP if email fails
+      user.resetPasswordOTP = null;
+      user.resetPasswordOTPExpiry = null;
+      await user.save();
+
+      throw new ApiError(500, "Failed to send reset email");
+    }
+
+    res.status(200).json(
+      new ApiResponse(200, null, "Reset password OTP sent successfully")
+    );
 
 });
+
+export const resetPassword = asynchandler(async (req, res) => {
+  const { email, otp, newPassword } = req.body;
+
+  if (!email || !otp || !newPassword) {
+    throw new ApiError(400, "Email, OTP and new password are required");
+  }
+
+  const user = await User.findOne({ email });
+
+  if (!user) {
+    throw new ApiError(404, "User not found");
+  }
+
+  if (
+    !user.resetPasswordOTP ||
+    !user.resetPasswordOTPExpiry ||
+    user.resetPasswordOTPExpiry < Date.now()
+  ) {
+    throw new ApiError(400, "OTP expired or invalid");
+  }
+
+  if (String(user.resetPasswordOTP) !== String(otp)) {
+    throw new ApiError(400, "Invalid OTP");
+  }
+
+  // update password (hashing assumed in pre-save hook)
+  user.password = newPassword;
+
+  // cleanup
+  user.resetPasswordOTP = null;
+  user.resetPasswordOTPExpiry = null;
+
+  await user.save();
+
+  res.status(200).json(
+    new ApiResponse(200, null, "Password reset successful")
+  );
+});
+
 
 function generateResetPasswordEmailContent(code){
   return `

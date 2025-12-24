@@ -1,4 +1,4 @@
-import { registerUser ,verifyEmail,loginUser,forgotPassword,changePassword} from "../controllers/auth.controller.js";
+import { registerUser ,verifyEmail,loginUser,forgotPassword,changePassword,resetPassword} from "../controllers/auth.controller.js";
 import { Router } from "express";
 import authMiddleware from "../middlewares/auth.middleware.js";
 
@@ -9,5 +9,6 @@ router.post("/verify-email", verifyEmail);
 router.post("/login", loginUser);
 router.post("/forgot-password", forgotPassword);
 router.post("/change-password", authMiddleware, changePassword);
+router.post("/reset-password", resetPassword);
 
 export default router;

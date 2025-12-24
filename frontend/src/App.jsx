@@ -1,24 +1,24 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Login from "./pages/login";
-import Signup from "./pages/signup";
-import Dashboard from "./pages/dashboard";
-import Customers from "./pages/customers";
-import CustomerDetails from "./pages/customerdetails";
-import Navbar from "./components/common/navbar";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Register from "./pages/Register";
+import VerifyEmail from "./pages/VerifyEmail";
+import Login from "./pages/Login";
+import Dashboard from "./pages/Dashboard";
+import ChangePassword from "./pages/ChangePassword";
+import ResetPassword from "./pages/ResetPassword";
+import ForgotPassword from "./pages/ForgotPassword"
 
-function App() {
+export default function App() {
   return (
-    <Router>
-      <Navbar />
+    <BrowserRouter>
       <Routes>
+        <Route path="/" element={<Register />} />
+        <Route path="/verify-email" element={<VerifyEmail />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<Signup />} />
-        <Route path="/" element={<Dashboard />} />
-        <Route path="/customers" element={<Customers />} />
-        <Route path="/customers/:id" element={<CustomerDetails />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/change-password" element={<ChangePassword />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
       </Routes>
-    </Router>
+    </BrowserRouter>
   );
 }
-
-export default App;
