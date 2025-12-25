@@ -5,6 +5,7 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import authRoutes from './routes/auth.routes.js';
 import interactionRoutes from './routes/interaction.routes.js';
+import dashboardRoutes from './routes/dashboard.routes.js'
 
 const app = express();
 
@@ -26,6 +27,9 @@ app.use('/api/auth', authRoutes);
 
 //interaction routes
 app.use('/api/interactions', interactionRoutes);
+
+//dashboard route
+app.use('/api/dashboard',dashboardRoutes);
 
 
 // Sample route
