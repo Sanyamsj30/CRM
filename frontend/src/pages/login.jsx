@@ -5,16 +5,56 @@ import { Link } from "react-router-dom";
 import AuthLayout from "../components/common/AuthLayout";
 
 export default function Login() {
-  const [form, setForm] = useState({});
+  const [form, setForm] = useState({
+    email: "",
+    password: ""
+  });
   const navigate = useNavigate();
+  const [error, setError] = useState("");
+  const [fieldErrors, setFieldErrors] = useState({
+    email: "",
+    password: "",
+  });
+  const [loading, setLoading] = useState(false);
+
 
   const submit = async (e) => {
     e.preventDefault();
+
+    // Reset errors
+    setError("");
+    setFieldErrors({ email: "", password: "" });
+
+    // Frontend validation
+    if (!form.email) {
+      setFieldErrors({ email: "Email is required", password: "" });
+      return;
+    }
+
+    if (!form.password) {
+      setFieldErrors({ email: "", password: "Password is required" });
+      return;
+    }
+
     try {
+      setLoading(true);
+
       await login(form);
       navigate("/dashboard");
     } catch (err) {
-      console.error(err.response?.data?.message);
+      const message =
+        err.response?.data?.message || "Login failed";
+
+      // 🔥 Field-specific handling
+      if (message.toLowerCase().includes("password")) {
+        setFieldErrors({ email: "", password: "Invalid password" });
+      } else if (message.toLowerCase().includes("email")) {
+        setFieldErrors({ email: "Invalid email", password: "" });
+      } else {
+        setError(message);
+      }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -56,6 +96,12 @@ export default function Login() {
           <p className="text-slate-500 text-sm mt-1 mb-6">
             Enter your credentials to access your account
           </p>
+          {/* Error message */}
+            {error && (
+              <div className="mb-4 text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">
+                {error}
+              </div>
+            )}
 
           {/* Email */}
           <label className="block text-sm font-medium text-slate-700 mb-1">
@@ -64,10 +110,20 @@ export default function Login() {
           <input
             type="email"
             placeholder="you@example.com"
-            className="w-full mb-4 px-4 py-2.5 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-emerald-400"
+            className={`w-full mb-1 px-4 py-2.5 rounded-lg border ${
+                fieldErrors.email
+                  ? "border-red-400 focus:ring-red-400"
+                  : "border-slate-300 focus:ring-emerald-400"
+              } focus:outline-none focus:ring-2`}
             value={form.email}
-            onChange={e => setForm[{...form,email:e.target.value}]}
+            onChange={(e) => setForm({...form,email:e.target.value})}
+            
           />
+          {fieldErrors.email && (
+              <p className="text-xs text-red-500 mb-3">
+                {fieldErrors.email}
+              </p>
+          )}
 
           {/* Password */}
           <label className="block text-sm font-medium text-slate-700 mb-1">
@@ -76,10 +132,20 @@ export default function Login() {
           <input
             type="password"
             placeholder="••••••••"
-            className="w-full mb-6 px-4 py-2.5 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-emerald-400"
+            className={`w-full mb-1 px-4 py-2.5 rounded-lg border ${
+                fieldErrors.password
+                  ? "border-red-400 focus:ring-red-400"
+                  : "border-slate-300 focus:ring-emerald-400"
+              } focus:outline-none focus:ring-2`}
             value={form.password}
-            onChange={e => setForm[{...form,password:e.target.value}]}
+            onChange={(e) => setForm({...form,password:e.target.value})}
           />
+
+          {fieldErrors.password && (
+              <p className="text-xs text-red-500 mb-4">
+                {fieldErrors.password}
+              </p>
+            )}
 
           <div className="text-right mb-4">
             <span className="text-sm text-emerald-600 cursor-pointer hover:underline">
@@ -89,15 +155,15 @@ export default function Login() {
 
 
           {/* Button */}
-          <button className="w-full bg-emerald-500 text-white py-2.5 rounded-lg font-medium hover:bg-emerald-600 transition">
-            Sign in
+          <button className="w-full bg-emerald-500 text-white py-2.5 rounded-lg font-medium hover:bg-emerald-600 transition" disabled={loading}>
+            {loading ? "Signing in..." : "Sign in"}
           </button>
 
           {/* Footer */}
           <p className="text-center text-sm text-slate-500 mt-6">
             Don&apos;t have an account?{" "}
             <span className="text-emerald-600 font-medium cursor-pointer hover:underline">
-              <Link to={"/"}>Sign up</Link>
+              <Link to={"/register"}>Sign up</Link>
             </span>
           </p>
         </div>

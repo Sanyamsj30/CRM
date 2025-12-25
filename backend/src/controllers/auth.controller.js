@@ -58,23 +58,23 @@ async function sendVerificationEmailAndMessage(Email, code, phone) {
     throw new Error("Email could not be sent.");
   }
 
-  try {
-   // CREATE CLIENT HERE
-  const twilioClient = twilio(
-    process.env.TWILIO_ACCOUNT_SID,
-    process.env.TWILIO_AUTH_TOKEN
-  );
+  // try {
+  //  // CREATE CLIENT HERE
+  // const twilioClient = twilio(
+  //   process.env.TWILIO_ACCOUNT_SID,
+  //   process.env.TWILIO_AUTH_TOKEN
+  // );
 
-    await twilioClient.messages.create({
-      body: `Your verification code is: ${code}`,
-      from: process.env.TWILIO_PHONE_NUMBER,
-      to: phone,
-    });
-    console.log("SMS sent");
-  } catch (err) {
-    console.error("SMS ERROR:", err);
-    throw new Error("SMS could not be sent.");
-  }
+  //   await twilioClient.messages.create({
+  //     body: `Your verification code is: ${code}`,
+  //     from: process.env.TWILIO_PHONE_NUMBER,
+  //     to: phone,
+  //   });
+  //   console.log("SMS sent");
+  // } catch (err) {
+  //   console.error("SMS ERROR:", err);
+  //   throw new Error("SMS could not be sent.");
+  // }
 }
 
 function generateEmailContent(code){

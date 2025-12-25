@@ -6,12 +6,14 @@ import Dashboard from "./pages/Dashboard";
 import ChangePassword from "./pages/ChangePassword";
 import ResetPassword from "./pages/ResetPassword";
 import ForgotPassword from "./pages/ForgotPassword"
+import Home from "./pages/Home";
 
 export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Register />} />
+        <Route path="/" element={<Home />} />
+        <Route path="/register" element={<Register />} />
         <Route path="/verify-email" element={<VerifyEmail />} />
         <Route path="/login" element={<Login />} />
         <Route path="/dashboard" element={<Dashboard />} />
