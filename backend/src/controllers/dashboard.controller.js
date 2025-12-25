@@ -1,4 +1,9 @@
-export const getDashboardData = asyncHandler(async (req, res) => {
+import Customer from "../models/customer.model.js"
+import Interaction from "../models/interaction.model.js"
+import{ asynchandler} from "../utils/asynchandler.js"
+
+
+export const getDashboardData = asynchandler(async (req, res) => {
   const userId = req.user._id;
 
   const customers = await Customer.find(

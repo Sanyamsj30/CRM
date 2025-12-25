@@ -7,6 +7,7 @@ import ChangePassword from "./pages/ChangePassword";
 import ResetPassword from "./pages/ResetPassword";
 import ForgotPassword from "./pages/ForgotPassword"
 import Home from "./pages/Home";
+import ProtectedRoute from "./components/protectRoute";
 
 export default function App() {
   return (
@@ -20,6 +21,13 @@ export default function App() {
         <Route path="/change-password" element={<ChangePassword />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<ResetPassword />} />
+        <Route path="/dashboard"
+          element={
+          <ProtectedRoute>
+            <Dashboard />
+          </ProtectedRoute>
+          }
+        />
       </Routes>
     </BrowserRouter>
   );

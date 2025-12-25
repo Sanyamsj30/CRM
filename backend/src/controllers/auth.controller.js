@@ -6,7 +6,7 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import sendEmail from '../utils/sendEmail.js';
 import twilio from 'twilio';
-
+import googleClient from "../utils/googleClient.js"
 
 
 // User Registration
@@ -428,5 +428,68 @@ export const changePassword = asynchandler(async(req,res)=>{
     res.status(200).json(new ApiResponse(200,null,"Password changed successfully"));
 });
 
+export const googleLogin = async (req, res) => {
+  try {
+    const { token } = req.body;
 
+    if (!token) {
+      return res.status(400).json({ message: "Token missing" });
+    }
+
+    const ticket = await googleClient.verifyIdToken({
+      idToken: token,
+      audience: process.env.GOOGLE_CLIENT_ID,
+    });
+
+    const payload = ticket.getPayload();
+    if (!payload) {
+      return res.status(400).json({ message: "Invalid Google token" });
+    }
+
+    const { email, name, sub } = payload;
+
+    let user = await User.findOne({ email });
+
+    // Case 1: New user
+    if (!user) {
+      user = await User.create({
+        name,
+        email,
+        googleId: sub,
+      });
+    }
+
+    // Case 2: Existing user, but first Google login
+    if (!user.googleId) {
+      user.googleId = sub;
+      await user.save();
+    }
+
+    // Case 3: Existing Google user, but mismatched Google ID
+    if (user.googleId !== sub) {
+      return res.status(400).json({
+        message: "This email is already linked to another Google account",
+      });
+    }
+
+    const jwtToken = jwt.sign(
+      { id: user._id },
+      process.env.JWT_SECRET,
+      { expiresIn: "7d" }
+    );
+
+    res.status(200).json({
+      success: true,
+      token: jwtToken,
+      user: {
+        id: user._id,
+        email: user.email,
+        name: user.name,
+      },
+    });
+  } catch (err) {
+    console.error("Google login error:", err);
+    res.status(500).json({ message: "Google login failed" });
+  }
+};
 

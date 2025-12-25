@@ -4,6 +4,24 @@ import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import AuthLayout from "../components/common/AuthLayout";
 
+import { GoogleLogin } from "@react-oauth/google";
+import axios from "../api/axiosInstance.js";
+
+<GoogleLogin
+  onSuccess={async (credentialResponse) => {
+    const res = await axios.post("/auth/google-login", {
+      token: credentialResponse.credential,
+    });
+
+    localStorage.setItem("token", res.data.token);
+    navigate("/dashboard");
+  }}
+  onError={() => {
+    console.log("Google Login Failed");
+  }}
+/>
+
+
 export default function Login() {
   const [form, setForm] = useState({
     email: "",
@@ -158,6 +176,35 @@ export default function Login() {
           <button className="w-full bg-emerald-500 text-white py-2.5 rounded-lg font-medium hover:bg-emerald-600 transition" disabled={loading}>
             {loading ? "Signing in..." : "Sign in"}
           </button>
+
+          {/* Divider */}
+          <div className="my-6 flex items-center">
+            <div className="flex-grow border-t border-slate-200"></div>
+            <span className="mx-3 text-sm text-slate-400">or</span>
+            <div className="flex-grow border-t border-slate-200"></div>
+          </div>
+
+          {/* Google Login */}
+          <div className="flex justify-center">
+            <GoogleLogin
+              onSuccess={async (credentialResponse) => {
+                try {
+                  const res = await axios.post("/auth/google-login", {
+                    token: credentialResponse.credential,
+                  });
+
+                  localStorage.setItem("token", res.data.token);
+                  navigate("/dashboard");
+                } catch (err) {
+                  setError("Google login failed. Try again.");
+                }
+              }}
+              onError={() => {
+                setError("Google login failed. Try again.");
+              }}
+            />
+          </div>
+
 
           {/* Footer */}
           <p className="text-center text-sm text-slate-500 mt-6">
