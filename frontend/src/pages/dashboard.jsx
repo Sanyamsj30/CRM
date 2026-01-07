@@ -4,6 +4,7 @@ import StatsCard from "../components/dashboard/StatsCard";
 import UpcomingMeetings from "../components/dashboard/UpcomingMeetings";
 import RecentInteractions from "../components/dashboard/RecentInteractions";
 import DashboardSkeleton from "../components/dashboard/DashboardSkeleton";
+import Navbar from "../components/common/navbar";
 
 function Dashboard() {
   const [data, setData] = useState(null);
@@ -23,13 +24,14 @@ function Dashboard() {
   const { stats, upcomingMeetings, recentInteractions } = data;
 
   return (
-    <div className="p-6 space-y-6">
+    <>
+    <Navbar />
+    <div className="p-6 mx-auto space-y-6">
       {/* Stats */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         <StatsCard title="Total Customers" value={stats.totalCustomers} />
         <StatsCard title="Active Customers" value={stats.activeCustomers} />
         <StatsCard title="Upcoming Meetings" value={stats.upcomingMeetings} />
-        <StatsCard title="Weekly Interactions" value={stats.weeklyInteractions} />
       </div>
 
       {/* Lists */}
@@ -38,6 +40,7 @@ function Dashboard() {
         <RecentInteractions interactions={recentInteractions} />
       </div>
     </div>
+    </>
   );
 }
 
