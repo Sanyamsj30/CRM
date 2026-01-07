@@ -19,7 +19,6 @@ export const createCustomer = asynchandler(async (req, res) => {
   if (!req.user || !req.user.id) {
   throw new ApiError(401, "Unauthorized");
 }
-console.log("BODY:", req.body);
 
 
   // prevent duplicate per user
@@ -42,8 +41,6 @@ console.log("BODY:", req.body);
     status,
     user: req.user.id,
   });
-  console.log("USER:", req.user);
-
 
   res
     .status(201)
