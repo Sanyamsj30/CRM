@@ -4,7 +4,7 @@ import{ asynchandler} from "../utils/asynchandler.js"
 
 
 export const getDashboardData = asynchandler(async (req, res) => {
-  const userId = req.user._id;
+  const userId = req.user.id;
 
   const customers = await Customer.find(
     { owner: userId },
@@ -13,7 +13,9 @@ export const getDashboardData = asynchandler(async (req, res) => {
 
   const customerIds = customers.map(c => c._id);
 
-  const totalCustomers = customerIds.length;
+   const totalCustomers = await Customer.countDocuments({
+    user: userId,
+  });
 
   const activeCustomers = await Customer.countDocuments({
     owner: userId,
