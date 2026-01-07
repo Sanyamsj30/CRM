@@ -40,7 +40,13 @@ export default function Navbar() {
 
             <NavLink
               to="/customers"
-              className="px-3 py-1.5 rounded-md text-sm text-slate-600 hover:bg-slate-100"
+              className={({ isActive }) =>
+                `px-3 py-1.5 rounded-md text-sm ${
+                  isActive
+                    ? "bg-emerald-50 text-emerald-600"
+                    : "text-slate-600 hover:bg-slate-100"
+                }`
+              }
             >
               Customers
             </NavLink>

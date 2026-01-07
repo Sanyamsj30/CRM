@@ -5,31 +5,31 @@ const customerSchema = mongoose.Schema(
         user:{
             type:mongoose.Schema.Types.ObjectId,
             ref:"User",
-            required:false
+            required:true
         },
         name:{
             type: String, 
             required: true
         },
-        email:{
-            type: String, 
-            unique: true,
-            lowercase:true,
-            trim:true
+        email: {
+            type: String,
+            lowercase: true,
+            trim: true,
         },
         phone:{
             type: String, 
-            required: true
+            trim: true,
         },
         relationship: {
             type: String,
-            enum: ["client", "prospect", "vendor", "partner", "personal", "recruiter"],
-            default: "prospect",
+            enum: ["Client", "Prospect", "Vendor", "Partner", "Personal", "Recruiter"],
+            default: "Prospect",
         },
+
         status: {
             type: String,
-            enum: ["lead", "active", "inactive"],
-            default: "lead",
+            enum: ["Lead", "Active", "Inactive"],
+            default: "Lead",
         },
     },
     {
