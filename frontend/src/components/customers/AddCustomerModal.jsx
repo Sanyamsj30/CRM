@@ -4,8 +4,9 @@ const isValidEmail = (email) => {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 };
 
-export default function AddCustomerModal({ onClose, onSave }) {
-  const [form, setForm] = useState({
+export default function AddCustomerModal({ onClose, onSave,initialData }) {
+  const [form, setForm] = useState(
+    initialData || {
     name: "",
     email: "",
     phone: "",
@@ -117,6 +118,21 @@ export default function AddCustomerModal({ onClose, onSave }) {
           <option value="Partner">Partner</option>
           <option value="Personal">Personal</option>
           <option value="Recruiter">Recruiter</option>
+        </select>
+
+        <label className="block text-sm text-slate-600 mb-1">
+          Status
+        </label>
+        <select
+          className="w-full mb-4 border p-2 rounded bg-white"
+          value={form.status}
+          onChange={(e) =>
+            setForm({ ...form, status: e.target.value })
+          }
+        >
+          <option value="Lead">Lead</option>
+          <option value="Active">Active</option>
+          <option value="Inactive">Inactive</option>
         </select>
 
         {/* Actions */}

@@ -9,10 +9,11 @@ import ForgotPassword from "./pages/ForgotPassword"
 import Home from "./pages/Home";
 import ProtectedRoute from "./components/protectRoute";
 import Customers from "./pages/customers";
-
+import {Toaster} from 'react-hot-toast';
 export default function App() {
   return (
     <BrowserRouter>
+      <Toaster position="top-right" reverseOrder={false} />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/register" element={<Register />} />

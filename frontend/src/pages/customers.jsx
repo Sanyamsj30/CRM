@@ -3,15 +3,14 @@ import Navbar from "../components/common/navbar";
 import SearchBar from "../components/customers/searchBar";
 import FilterDropdown from "../components/customers/FilterDropdown";
 import EmptyCustomers from "../components/customers/EmptyCustomers";
-import { fetchCustomers } from "../api/customers";
-
-import { createCustomer } from "../api/customers";
+import CustomerList from "../components/customers/CustomerList";
 import AddCustomerModal from "../components/customers/AddCustomerModal";
-
-
-
-
-
+import {
+  fetchCustomers,
+  createCustomer,
+  updateCustomer,
+} from "../api/customers";
+import toast from 'react-hot-toast';
 
 export default function Customers() {
   const [customers, setCustomers] = useState([]);
@@ -20,18 +19,9 @@ export default function Customers() {
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("All Status");
   const [relationship, setRelationship] = useState("All Types");
-  const [showModal, setShowModal] = useState(false);
 
-const handleCreate = async (payload) => {
-   try {
-    await createCustomer(payload);
-    setShowModal(false);
-    loadCustomers();//refresh list
-  } catch (err) {
-    console.error("FULL ERROR:", err.response);
-    alert(err.response?.data?.message);
-  }
-};
+  const [showModal, setShowModal] = useState(false);
+  const [editCustomer, setEditCustomer] = useState(null);
 
   const loadCustomers = async () => {
     setLoading(true);
@@ -50,6 +40,42 @@ const handleCreate = async (payload) => {
   useEffect(() => {
     loadCustomers();
   }, [search, status, relationship]);
+
+  const handleSaveCustomer = async (data) => {
+    try {
+      if (editCustomer) {
+        await updateCustomer(editCustomer._id, data);
+        toast.success("Customer updated");
+
+      } else {
+        await createCustomer(data);
+        toast.success("Customer created");
+      }
+      setShowModal(false);
+      setEditCustomer(null);
+      loadCustomers();
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Something went wrong");
+      console.error(err);
+      throw err; // important so modal can also react
+    }
+  };
+
+  const handleDelete = async (customer) => {
+  const confirmed = window.confirm(
+    `Delete ${customer.name}? This cannot be undone.`
+  );
+
+  if (!confirmed) return;
+
+  try {
+    await deleteCustomer(customer._id);
+    loadCustomers();
+  } catch (err) {
+    alert("Failed to delete customer");
+  }
+};
+
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -105,14 +131,20 @@ const handleCreate = async (payload) => {
           ) : customers.length === 0 ? (
             <EmptyCustomers />
           ) : (
-            <pre>{JSON.stringify(customers, null, 2)}</pre>
+            <CustomerList customers={customers} onEdit={setEditCustomer} onDelete={handleDelete}/>
           )}
         </div>
       </main>
-      {showModal && (
+
+      {/* Add / Edit Modal */}
+      {(showModal || editCustomer) && (
         <AddCustomerModal
-          onClose={() => setShowModal(false)}
-          onSave={handleCreate}
+          initialData={editCustomer}
+          onClose={() => {
+            setShowModal(false);
+            setEditCustomer(null);
+          }}
+          onSave={handleSaveCustomer}
         />
       )}
     </div>
