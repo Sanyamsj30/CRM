@@ -9,6 +9,7 @@ import {
   fetchCustomers,
   createCustomer,
   updateCustomer,
+  deleteCustomer,
 } from "../api/customers";
 import toast from 'react-hot-toast';
 

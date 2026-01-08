@@ -33,8 +33,12 @@ function Dashboard() {
     { name: "Active", count: stats.activeCustomers },
     {
       name: "Inactive",
-      count: stats.totalCustomers - stats.activeCustomers,
+      count: stats.InactiveCustomers,
     },
+    {
+      name:"Lead",
+      count: stats.totalCustomers - stats.activeCustomers - stats.InactiveCustomers,
+    }
   ];
 
   return (

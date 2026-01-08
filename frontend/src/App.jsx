@@ -10,6 +10,7 @@ import Home from "./pages/Home";
 import ProtectedRoute from "./components/protectRoute";
 import Customers from "./pages/customers";
 import {Toaster} from 'react-hot-toast';
+import Customerdetails from "./pages/customerdetails";
 export default function App() {
   return (
     <BrowserRouter>
@@ -19,12 +20,11 @@ export default function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/verify-email" element={<VerifyEmail />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/change-password" element={<ChangePassword />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<ResetPassword />} />
-        <Route path="/customers" element={<Customers />} />
-
+        <Route path="/customers" element={<ProtectedRoute><Customers /></ProtectedRoute>} />
+        <Route path="/customers/:id" element={<ProtectedRoute><Customerdetails /></ProtectedRoute>} />
         <Route path="/dashboard"
           element={
           <ProtectedRoute>

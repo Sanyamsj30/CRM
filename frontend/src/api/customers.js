@@ -19,3 +19,8 @@ export const deleteCustomer = async (id) => {
   const res = await axios.delete(`/customers/${id}`);
   return res.data.data;
 }
+
+export const fetchCustomerById = async (id) => {
+  const res = await axios.get(`/customers/${id}`);
+  return res.data.data;
+}

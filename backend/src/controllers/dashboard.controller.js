@@ -14,6 +14,10 @@ export const getDashboardData = asynchandler(async (req, res) => {
     user: userId,
     status: "Active",
   });
+  const InactiveCustomers = await Customer.countDocuments({
+    user: userId,
+    status: "Inactive",
+  });
 
   const upcomingMeetings = await Interaction.find({
     user: userId,
@@ -40,6 +44,7 @@ export const getDashboardData = asynchandler(async (req, res) => {
       stats: {
         totalCustomers,
         activeCustomers,
+        InactiveCustomers,
         upcomingMeetings: upcomingMeetings.length,
       },
       upcomingMeetings: upcomingMeetings.map(m => ({
