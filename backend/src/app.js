@@ -6,6 +6,8 @@ import cookieParser from 'cookie-parser';
 import authRoutes from './routes/auth.routes.js';
 import interactionRoutes from './routes/interaction.routes.js';
 import dashboardRoutes from './routes/dashboard.routes.js'
+import "./cron/meetingReminder.js";
+
 
 const app = express();
 

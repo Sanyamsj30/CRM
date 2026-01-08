@@ -22,7 +22,7 @@ export const getDashboardData = asynchandler(async (req, res) => {
   const upcomingMeetings = await Interaction.find({
     user: userId,
     type: "meeting",
-    status: "scheduled",
+    status: "pending",
     scheduledAt: { $gte: new Date() },
   })
     .populate("customer", "name")
@@ -32,6 +32,7 @@ export const getDashboardData = asynchandler(async (req, res) => {
 
   const recentInteractions = await Interaction.find({
     user: userId,
+    status: "completed",
   })
     .populate("customer", "name")
     .sort({ createdAt: -1 })

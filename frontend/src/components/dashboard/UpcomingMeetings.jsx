@@ -6,7 +6,7 @@ function UpcomingMeetings({ meetings }) {
       <ul className="bg-white rounded-xl border divide-y">
         {meetings.map(m => (
           <li key={m._id} className="p-4">
-            <p className="font-medium">{m.customer.name}</p>
+            <p className="font-medium">{m.customerName}</p>
             <p className="text-sm text-slate-500">
               {new Date(m.scheduledAt).toLocaleString()}
             </p>
