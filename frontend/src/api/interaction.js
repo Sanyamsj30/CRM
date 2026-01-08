@@ -9,7 +9,10 @@ export const fetchCustomerInteractions = async (customerId) => {
 };
 
 export const completeInteraction = (id) =>
-  axios.put(`/interactions/${id}/complete`);
+  axios.put(`/interactions/${id}/status`, { status: "completed" });
 
 export const deleteInteraction = (id) =>
   axios.delete(`/interactions/${id}`);
+
+export const rescheduleInteraction = (id, scheduledAt) =>
+  axios.put(`/interactions/${id}/reschedule`, { scheduledAt });

@@ -119,3 +119,49 @@ export const deleteInteractionById = asynchandler(async (req, res) => {
 
   res.json(new ApiResponse(200, null, "Interaction deleted"));
 });
+
+export const rescheduleInteraction = asynchandler(async (req, res) => {
+  const { id } = req.params;
+  const { scheduledAt } = req.body;
+
+  if (!scheduledAt) {
+    throw new ApiError(400, "New scheduledAt is required");
+  }
+
+  const interaction = await Interaction.findOne({
+    _id: id,
+    user: req.user.id,
+    type: "meeting",
+    status: "pending",
+  });
+
+  if (!interaction) {
+    throw new ApiError(404, "Meeting not found or already completed");
+  }
+
+  const start = new Date(scheduledAt);
+  const end = new Date(start.getTime() + 60 * 60 * 1000);
+
+  const conflict = await Interaction.findOne({
+    _id: { $ne: id },
+    customer: interaction.customer,
+    user: req.user.id,
+    type: "meeting",
+    status: "scheduled",
+    scheduledAt: { $lt: end, $gte: start },
+  });
+
+  if (conflict) {
+    throw new ApiError(
+      409,
+      "Another meeting is already scheduled at this time"
+    );
+  }
+
+  interaction.scheduledAt = scheduledAt;
+  await interaction.save();
+
+  res.json(
+    new ApiResponse(200, interaction, "Meeting rescheduled successfully")
+  );
+});

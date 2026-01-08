@@ -2,8 +2,11 @@ import {
   completeInteraction,
   deleteInteraction,
 } from "../../api/interaction";
+import RescheduleMeetingModal from "./RescheduleMeetingModal";
+import { useState } from "react";
 
 export default function InteractionTimeline({ interactions, onRefresh }) {
+  const [rescheduleInteraction, setRescheduleInteraction] = useState(null);
   return (
     <div className="space-y-3">
       {interactions.map((i) => (
@@ -21,6 +24,7 @@ export default function InteractionTimeline({ interactions, onRefresh }) {
           <p className="mt-2 text-slate-700">
             {i.content}
           </p>
+
 
           {i.status === "pending" && i.scheduledAt && (
             <button
@@ -43,8 +47,29 @@ export default function InteractionTimeline({ interactions, onRefresh }) {
           >
             Delete
           </button>
+          
+          {i.type === "meeting" && i.status === "pending" && (
+            <button
+              className="text-blue-600 text-sm ml-4 mt-2"
+              onClick={() => setRescheduleInteraction(i)}
+            >
+              Reschedule
+            </button>
+          )}
+   
         </div>
+        
       ))}
+      {rescheduleInteraction && (
+        <RescheduleMeetingModal
+          interaction={rescheduleInteraction}
+          onClose={() => setRescheduleInteraction(null)}
+          onSaved={onRefresh}
+        />
+      )}
+
     </div>
+    
   );
+  
 }
