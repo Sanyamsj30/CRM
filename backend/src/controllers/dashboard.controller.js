@@ -4,29 +4,22 @@ import{ asynchandler} from "../utils/asynchandler.js"
 
 
 export const getDashboardData = asynchandler(async (req, res) => {
-  const userId = req.user.id;
+  const userId = req.user.id; // ✅ THIS WAS MISSING
 
-  const customers = await Customer.find(
-    { owner: userId },
-    { _id: 1 }
-  ).lean();
-
-  const customerIds = customers.map(c => c._id);
-
-   const totalCustomers = await Customer.countDocuments({
+  const totalCustomers = await Customer.countDocuments({
     user: userId,
   });
 
   const activeCustomers = await Customer.countDocuments({
-    owner: userId,
-    status: "active",
+    user: userId,
+    status: "Active",
   });
 
   const upcomingMeetings = await Interaction.find({
-    customer: { $in: customerIds },
+    user: userId,
     type: "meeting",
-    scheduledAt: { $gte: new Date() },
     status: "scheduled",
+    scheduledAt: { $gte: new Date() },
   })
     .populate("customer", "name")
     .sort({ scheduledAt: 1 })
@@ -34,14 +27,14 @@ export const getDashboardData = asynchandler(async (req, res) => {
     .lean();
 
   const recentInteractions = await Interaction.find({
-    customer: { $in: customerIds },
+    user: userId,
   })
     .populate("customer", "name")
     .sort({ createdAt: -1 })
     .limit(5)
     .lean();
 
-  res.json({
+  res.status(200).json({
     success: true,
     data: {
       stats: {
@@ -64,3 +57,4 @@ export const getDashboardData = asynchandler(async (req, res) => {
     },
   });
 });
+

@@ -3,6 +3,12 @@ import mongoose from 'mongoose';
 
 const interactionSchema = mongoose.Schema(
     {
+        user: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User",
+            required: true,
+        }
+,
         customer:{
             type:mongoose.Schema.Types.ObjectId,
             ref:"Customer",

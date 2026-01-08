@@ -1,22 +1,19 @@
 function UpcomingMeetings({ meetings }) {
   return (
     <div className="bg-white rounded-lg shadow p-4">
-      <h3 className="font-semibold mb-3">Upcoming Meetings</h3>
+      <h2 className="text-lg font-semibold mb-3">Upcoming Meetings</h2>
 
-      {meetings.length === 0 ? (
-        <p className="text-gray-500 text-sm">No upcoming meetings</p>
-      ) : (
-        <ul className="space-y-3">
-          {meetings.map((m) => (
-            <li key={m._id} className="border-b pb-2">
-              <p className="font-medium">{m.customerName}</p>
-              <p className="text-sm text-gray-500">
-                {new Date(m.scheduledAt).toLocaleString()}
-              </p>
-            </li>
-          ))}
-        </ul>
-      )}
+      <ul className="bg-white rounded-xl border divide-y">
+        {meetings.map(m => (
+          <li key={m._id} className="p-4">
+            <p className="font-medium">{m.customer.name}</p>
+            <p className="text-sm text-slate-500">
+              {new Date(m.scheduledAt).toLocaleString()}
+            </p>
+          </li>
+        ))}
+      </ul>
+
     </div>
   );
 }

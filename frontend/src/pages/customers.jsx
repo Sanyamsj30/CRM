@@ -23,6 +23,11 @@ export default function Customers() {
   const [showModal, setShowModal] = useState(false);
   const [editCustomer, setEditCustomer] = useState(null);
 
+  const [total, setTotal] = useState(0);
+  const [page, setPage] = useState(1);
+  const [pages, setPages] = useState(1);
+  const limit = 5;
+
   const loadCustomers = async () => {
     setLoading(true);
     try {
@@ -30,8 +35,13 @@ export default function Customers() {
         search,
         status,
         relationship,
+        page,
+        limit,
       });
-      setCustomers(data);
+      setCustomers(data.customers);
+      setTotal(data.total);
+      setPage(data.page);
+      setPages(data.pages);
     } finally {
       setLoading(false);
     }
@@ -39,7 +49,7 @@ export default function Customers() {
 
   useEffect(() => {
     loadCustomers();
-  }, [search, status, relationship]);
+  }, [search, status, relationship,page]);
 
   const handleSaveCustomer = async (data) => {
     try {
@@ -134,6 +144,28 @@ export default function Customers() {
             <CustomerList customers={customers} onEdit={setEditCustomer} onDelete={handleDelete}/>
           )}
         </div>
+        <div className="flex justify-end gap-3 mt-6">
+        <button
+          className="px-3 py-1 border rounded"
+          onClick={() => setPage((p) => Math.max(p - 1, 1))}
+          disabled={page === 1}
+        >
+          Prev
+        </button>
+
+        <span className="px-2 py-1 text-sm text-slate-600">
+          Page {page} of {pages}
+        </span>
+
+        <button
+          className="px-3 py-1 border rounded"
+          onClick={() => setPage((p) => p + 1)}
+          disabled={page >= pages}
+        >
+          Next
+        </button>
+      </div>
+
       </main>
 
       {/* Add / Edit Modal */}
